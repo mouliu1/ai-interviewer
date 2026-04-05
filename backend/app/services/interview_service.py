@@ -33,10 +33,17 @@ class InterviewService:
             {"question": session["current_question"], "answer_text": answer_text},
         )
         total_score = weighted_score(evaluation["dimension_scores"])
-        next_action = "ask_followup" if evaluation["followup_needed"] else "ask_next_main_question"
-        next_question = evaluation["followup_question"] or "Describe one trade-off you made in that system."
-        next_round = min(session["current_round"] + 1, session["planned_round_count"])
-        session_status = session["status"]
+        is_final_round = session["current_round"] >= session["planned_round_count"]
+        if is_final_round:
+            next_action = "finish_interview"
+            next_question = ""
+            next_round = session["planned_round_count"]
+            session_status = "ready_to_finish"
+        else:
+            next_action = "ask_followup" if evaluation["followup_needed"] else "ask_next_main_question"
+            next_question = evaluation["followup_question"] or "Describe one trade-off you made in that system."
+            next_round = session["current_round"] + 1
+            session_status = "in_progress"
         self.db.update_session(session_id, next_question, next_round, session_status)
         return {
             "next_action": next_action,
