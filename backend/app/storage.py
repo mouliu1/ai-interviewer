@@ -57,3 +57,14 @@ class Database:
             "current_round": row[3],
             "status": row[4],
         }
+
+    def update_session(self, session_id: str, current_question: str, current_round: int, status: str) -> None:
+        with self.connect() as conn:
+            conn.execute(
+                """
+                update sessions
+                set current_question = ?, current_round = ?, status = ?
+                where session_id = ?
+                """,
+                (current_question, current_round, status, session_id),
+            )

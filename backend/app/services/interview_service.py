@@ -35,6 +35,9 @@ class InterviewService:
         total_score = weighted_score(evaluation["dimension_scores"])
         next_action = "ask_followup" if evaluation["followup_needed"] else "ask_next_main_question"
         next_question = evaluation["followup_question"] or "Describe one trade-off you made in that system."
+        next_round = min(session["current_round"] + 1, session["planned_round_count"])
+        session_status = session["status"]
+        self.db.update_session(session_id, next_question, next_round, session_status)
         return {
             "next_action": next_action,
             "next_question": next_question,
@@ -43,7 +46,7 @@ class InterviewService:
                 "dimension_scores": evaluation["dimension_scores"],
             },
             "turn_feedback": evaluation["strengths"] + evaluation["weaknesses"],
-            "current_round": session["current_round"],
-            "remaining_rounds": max(session["planned_round_count"] - session["current_round"], 0),
-            "session_status": "in_progress",
+            "current_round": next_round,
+            "remaining_rounds": max(session["planned_round_count"] - next_round, 0),
+            "session_status": session_status,
         }
