@@ -33,3 +33,23 @@ def test_prepare_rejects_empty_resume_extraction(client, monkeypatch):
 
     assert response.status_code == 422
     assert response.json()["detail"] == "Resume PDF could not be extracted."
+
+
+def test_prepare_allows_unexpected_extraction_failures_to_surface(client, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.api import prepare as prepare_api
+    from app.main import app
+
+    def explode(_):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(prepare_api, "extract_pdf_text", explode)
+
+    files = {"resume_file": ("resume.pdf", BytesIO(b"%PDF-demo"), "application/pdf")}
+    data = {"jd_text": "We need an AI application engineer with Python and RAG experience."}
+
+    with TestClient(app, raise_server_exceptions=False) as test_client:
+        response = test_client.post("/api/v1/prepare", files=files, data=data)
+
+    assert response.status_code == 500
