@@ -85,7 +85,7 @@ def test_answer_endpoint_transitions_to_finish_ready_when_rounds_are_exhausted(c
     persisted_session = interview_api.build_interview_service().db.get_session(session_id)
 
     assert answer_response.status_code == 200
-    assert answer_response.json()["next_action"] == "finish_interview"
+    assert answer_response.json()["next_action"] == "finish_ready"
     assert answer_response.json()["next_question"] == ""
     assert answer_response.json()["current_round"] == 2
     assert answer_response.json()["remaining_rounds"] == 0

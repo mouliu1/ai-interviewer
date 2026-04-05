@@ -43,7 +43,7 @@ class InterviewService:
         total_score = weighted_score(evaluation["dimension_scores"])
         is_final_round = session["current_round"] >= session["planned_round_count"]
         if is_final_round:
-            next_action = "finish_interview"
+            next_action = "finish_ready"
             next_question = ""
             next_round = session["planned_round_count"]
             session_status = "ready_to_finish"
