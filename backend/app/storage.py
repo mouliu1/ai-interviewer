@@ -78,6 +78,17 @@ class Database:
                 (current_question, current_round, status, session_id),
             )
 
+    def update_session_status(self, session_id: str, status: str) -> None:
+        with self.connect() as conn:
+            conn.execute(
+                """
+                update sessions
+                set status = ?
+                where session_id = ?
+                """,
+                (status, session_id),
+            )
+
     def save_report(self, session_id: str, payload: dict) -> str:
         report_id = session_id
         with self.connect() as conn:

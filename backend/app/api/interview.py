@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.config import Settings
 from app.llm.client import build_llm_client
-from app.schemas.interview import AnswerRequest, StartInterviewRequest, TurnSummary
+from app.schemas.interview import AnswerRequest, FinishInterviewRequest, StartInterviewRequest, TurnSummary
 from app.services.interview_service import InterviewService, InterviewSessionStateError
 from app.services.report_service import ReportService
 from app.storage import Database
@@ -42,20 +42,29 @@ def answer_interview(request: AnswerRequest) -> TurnSummary:
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Session not found.") from exc
     except InterviewSessionStateError as exc:
-        raise HTTPException(status_code=409, detail="Interview session is ready to finish.") from exc
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.post("/interview/finish")
-def finish_interview(payload: dict) -> dict:
-    report = build_report_service().build_report(payload["session_id"])
-    return {
-        "report_id": report["report_header"]["session_id"],
-        "overall_score": report["overall_score"],
-        "report_summary": report["final_summary"],
-        "session_status": "finished",
-    }
+def finish_interview(request: FinishInterviewRequest) -> dict:
+    try:
+        report = build_report_service().build_report(request.session_id)
+        return {
+            "report_id": report["report_header"]["session_id"],
+            "overall_score": report["overall_score"],
+            "report_summary": report["final_summary"],
+            "session_status": "finished",
+        }
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Session not found.") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.get("/report/{session_id}")
 def get_report(session_id: str) -> dict:
-    return build_report_service().get_report(session_id)
+    try:
+        return build_report_service().get_report(session_id)
+    except KeyError as exc:
+        detail = "Session not found." if "missing session" in str(exc) else "Report not found."
+        raise HTTPException(status_code=404, detail=detail) from exc

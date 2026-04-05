@@ -14,6 +14,9 @@ class ReportService:
         self.llm_client = build_llm_client(self.settings)
 
     def build_report(self, session_id: str) -> dict:
+        session = self.db.get_session(session_id)
+        if session["status"] != "ready_to_finish":
+            raise ValueError("Interview session is not ready to finish.")
         topics = load_topics(Path(self.settings.rag_data_path))
         retrieved = retrieve_topics(topics, ["rag", "evaluation"])
         review = self.llm_client.complete_json("final_review", {"session_id": session_id, "retrieved": retrieved})
@@ -28,8 +31,12 @@ class ReportService:
             "overall_score": review["overall_score"],
         }
         self.db.save_report(session_id, report)
+        self.db.update_session_status(session_id, "finished")
         return report
 
     def get_report(self, session_id: str) -> dict:
+        self.db.get_session(session_id)
         cached = self.db.get_report(session_id)
-        return cached or self.build_report(session_id)
+        if cached is None:
+            raise KeyError(f"missing report: {session_id}")
+        return cached

@@ -34,6 +34,8 @@ class InterviewService:
         session = self.db.get_session(session_id)
         if session["status"] == "ready_to_finish":
             raise InterviewSessionStateError("Interview session is ready to finish.")
+        if session["status"] == "finished":
+            raise InterviewSessionStateError("Interview session is already finished.")
         evaluation = self.llm_client.complete_json(
             "turn_evaluate",
             {"question": session["current_question"], "answer_text": answer_text},

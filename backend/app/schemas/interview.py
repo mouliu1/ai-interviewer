@@ -14,6 +14,10 @@ class AnswerRequest(BaseModel):
     answer_text: str
 
 
+class FinishInterviewRequest(BaseModel):
+    session_id: str
+
+
 class TurnSummary(BaseModel):
     next_action: str
     next_question: str
