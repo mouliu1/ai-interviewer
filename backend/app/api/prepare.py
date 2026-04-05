@@ -15,6 +15,11 @@ async def prepare(resume_file: UploadFile = File(...), jd_text: str = Form(...))
         raise HTTPException(status_code=422, detail="JD text is required.")
 
     file_bytes = await resume_file.read()
-    resume_text = extract_pdf_text(file_bytes)
+    try:
+        resume_text = extract_pdf_text(file_bytes)
+    except Exception as exc:
+        raise HTTPException(status_code=422, detail="Resume PDF could not be extracted.") from exc
+    if not resume_text.strip():
+        raise HTTPException(status_code=422, detail="Resume PDF could not be extracted.")
     service = PrepareService(build_llm_client(Settings()))
     return PrepareResponse(**service.prepare(resume_text, jd_text))

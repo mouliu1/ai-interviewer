@@ -1,10 +1,14 @@
 import uuid
+from typing import Protocol
 
-from app.llm.client import FakeLLMClient
+
+class CompleteJsonClient(Protocol):
+    def complete_json(self, prompt_name: str, payload: dict) -> dict:
+        ...
 
 
 class PrepareService:
-    def __init__(self, llm_client: FakeLLMClient):
+    def __init__(self, llm_client: CompleteJsonClient):
         self.llm_client = llm_client
 
     def prepare(self, resume_text: str, jd_text: str) -> dict:
