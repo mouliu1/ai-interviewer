@@ -9,6 +9,10 @@ class CompleteJsonClient(Protocol):
         ...
 
 
+class InterviewSessionStateError(ValueError):
+    pass
+
+
 class InterviewService:
     def __init__(self, db: Database, llm_client: CompleteJsonClient):
         self.db = db
@@ -28,6 +32,8 @@ class InterviewService:
 
     def answer(self, session_id: str, answer_text: str) -> dict:
         session = self.db.get_session(session_id)
+        if session["status"] == "ready_to_finish":
+            raise InterviewSessionStateError("Interview session is ready to finish.")
         evaluation = self.llm_client.complete_json(
             "turn_evaluate",
             {"question": session["current_question"], "answer_text": answer_text},

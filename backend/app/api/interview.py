@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from app.config import Settings
 from app.llm.client import build_llm_client
 from app.schemas.interview import AnswerRequest, StartInterviewRequest, TurnSummary
-from app.services.interview_service import InterviewService
+from app.services.interview_service import InterviewService, InterviewSessionStateError
 from app.storage import Database
 
 router = APIRouter(prefix="/api/v1/interview")
@@ -35,3 +35,5 @@ def answer_interview(request: AnswerRequest) -> TurnSummary:
         return TurnSummary(**service.answer(request.session_id, request.answer_text))
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Session not found.") from exc
+    except InterviewSessionStateError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
