@@ -19,5 +19,16 @@ def test_fake_client_returns_structured_payload():
         payload={"resume_text": "Python RAG project"},
     )
 
-    assert "skills" in result
-    assert "projects" in result
+    assert result == {
+        "candidate_name": "Demo Candidate",
+        "skills": ["Python", "RAG"],
+        "projects": [
+            {
+                "name": "RAG Interview Coach",
+                "keywords": ["Python", "RAG", "Prompt"],
+                "highlights": ["built retrieval pipeline"],
+                "risk_points": ["missing evaluation metrics"],
+            }
+        ],
+        "experience_summary": "Built LLM application features.",
+    }

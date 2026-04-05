@@ -27,7 +27,7 @@ class FakeLLMClient:
                 "business_context": "LLM product team",
                 "interview_focus": ["RAG", "evaluation"],
             }
-        return {"ok": True}
+        raise ValueError(f"Unknown prompt: {prompt_name}")
 
 
 def build_llm_client(settings: Settings) -> FakeLLMClient:
