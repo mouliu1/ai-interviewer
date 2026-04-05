@@ -48,6 +48,8 @@ class Database:
                 """,
                 (session_id,),
             ).fetchone()
+        if row is None:
+            raise KeyError(f"missing session: {session_id}")
         return {
             "session_id": row[0],
             "current_question": row[1],

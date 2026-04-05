@@ -1,10 +1,12 @@
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 
 class StartInterviewRequest(BaseModel):
     prepare_id: str
-    mode: str = "standard"
-    planned_round_count: int = 3
+    mode: Literal["standard"] = "standard"
+    planned_round_count: int = Field(default=3, ge=1)
 
 
 class AnswerRequest(BaseModel):
