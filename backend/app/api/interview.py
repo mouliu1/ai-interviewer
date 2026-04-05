@@ -6,29 +6,35 @@ from app.config import Settings
 from app.llm.client import build_llm_client
 from app.schemas.interview import AnswerRequest, StartInterviewRequest, TurnSummary
 from app.services.interview_service import InterviewService, InterviewSessionStateError
+from app.services.report_service import ReportService
 from app.storage import Database
 
-router = APIRouter(prefix="/api/v1/interview")
+router = APIRouter(prefix="/api/v1")
 
 
-def _database_path_from_settings(settings: Settings) -> Path:
-    return Path(settings.database_url.removeprefix("sqlite:///"))
+def build_database() -> Database:
+    settings = Settings()
+    db = Database(Path(settings.database_url.removeprefix("sqlite:///")))
+    db.init_schema()
+    return db
 
 
 def build_interview_service() -> InterviewService:
     settings = Settings()
-    db = Database(_database_path_from_settings(settings))
-    db.init_schema()
-    return InterviewService(db, build_llm_client(settings))
+    return InterviewService(build_database(), build_llm_client(settings))
 
 
-@router.post("/start")
+def build_report_service() -> ReportService:
+    return ReportService(build_database())
+
+
+@router.post("/interview/start")
 def start_interview(request: StartInterviewRequest) -> dict:
     service = build_interview_service()
     return service.start(request.prepare_id, request.planned_round_count)
 
 
-@router.post("/answer", response_model=TurnSummary)
+@router.post("/interview/answer", response_model=TurnSummary)
 def answer_interview(request: AnswerRequest) -> TurnSummary:
     service = build_interview_service()
     try:
@@ -36,4 +42,20 @@ def answer_interview(request: AnswerRequest) -> TurnSummary:
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Session not found.") from exc
     except InterviewSessionStateError as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
+        raise HTTPException(status_code=409, detail="Interview session is ready to finish.") from exc
+
+
+@router.post("/interview/finish")
+def finish_interview(payload: dict) -> dict:
+    report = build_report_service().build_report(payload["session_id"])
+    return {
+        "report_id": report["report_header"]["session_id"],
+        "overall_score": report["overall_score"],
+        "report_summary": report["final_summary"],
+        "session_status": "finished",
+    }
+
+
+@router.get("/report/{session_id}")
+def get_report(session_id: str) -> dict:
+    return build_report_service().get_report(session_id)

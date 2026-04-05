@@ -1,0 +1,14 @@
+[
+  {
+    "topic": "RAG evaluation",
+    "keywords": ["rag", "evaluation", "retrieval", "metrics"],
+    "question_angles": ["retrieval precision", "offline evaluation", "ablation design"],
+    "review_hints": ["include metrics", "explain validation dataset"]
+  },
+  {
+    "topic": "Prompt engineering",
+    "keywords": ["prompt", "reasoning", "function calling"],
+    "question_angles": ["prompt iteration", "guardrails", "tool routing"],
+    "review_hints": ["show prompt trade-offs", "link prompt changes to outcomes"]
+  }
+]

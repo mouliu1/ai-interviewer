@@ -32,10 +32,19 @@ _FAKE_RESPONSES = {
         ]
     },
     "final_review": {
-        "summary": "Strong applied LLM experience with one evaluation gap.",
-        "strengths": ["retrieval", "prompting"],
-        "risks": ["unclear offline evaluation"],
-        "recommendation": "proceed",
+        "overall_score": 78,
+        "overall_summary": "Strong project relevance, but missing quantitative validation.",
+        "dimension_breakdown": {
+            "technical_accuracy": 4,
+            "relevance": 4,
+            "depth": 3,
+            "evidence": 2,
+            "clarity": 4,
+        },
+        "key_strengths": ["Can explain the main RAG pipeline."],
+        "major_gaps": ["Needs stronger metrics and experiment evidence."],
+        "action_items": ["Add retrieval metrics to the project story."],
+        "recommended_practice_questions": ["How do you evaluate retrieval quality offline?"],
     },
 }
 

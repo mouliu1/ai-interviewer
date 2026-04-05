@@ -25,6 +25,15 @@ class Database:
                 )
                 """
             )
+            conn.execute(
+                """
+                create table if not exists reports (
+                  report_id text primary key,
+                  session_id text not null,
+                  payload text not null
+                )
+                """
+            )
 
     def create_session(self, prepare_payload: dict, first_question: str, planned_round_count: int) -> str:
         session_id = str(uuid.uuid4())
@@ -68,3 +77,20 @@ class Database:
                 """,
                 (current_question, current_round, status, session_id),
             )
+
+    def save_report(self, session_id: str, payload: dict) -> str:
+        report_id = session_id
+        with self.connect() as conn:
+            conn.execute(
+                """
+                insert or replace into reports(report_id, session_id, payload)
+                values (?, ?, ?)
+                """,
+                (report_id, session_id, json.dumps(payload)),
+            )
+        return report_id
+
+    def get_report(self, session_id: str) -> dict | None:
+        with self.connect() as conn:
+            row = conn.execute("select payload from reports where session_id = ?", (session_id,)).fetchone()
+        return json.loads(row[0]) if row else None
