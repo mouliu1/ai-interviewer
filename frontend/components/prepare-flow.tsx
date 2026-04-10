@@ -237,7 +237,7 @@ export function PrepareFlow() {
         <div className="panel-header">
           <div>
             <div className="panel-eyebrow">步骤一</div>
-            <h2 aria-hidden="true">准备本场面试</h2>
+            <h2>准备本场面试</h2>
           </div>
           <div className="status-pill">{prepareResult ? "已生成" : "待准备"}</div>
         </div>
