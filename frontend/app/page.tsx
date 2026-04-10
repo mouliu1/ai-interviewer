@@ -1,5 +1,5 @@
-import { PrepareFlow } from "@/components/prepare-flow";
+import { HomeLanding } from "@/components/home-landing";
 
 export default function HomePage() {
-  return <PrepareFlow />;
+  return <HomeLanding />;
 }
