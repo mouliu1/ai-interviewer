@@ -1,0 +1,118 @@
+.page {
+  display: grid;
+  gap: 72px;
+  padding: 18px 0 72px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
+  gap: 32px;
+  align-items: center;
+  min-height: calc(100svh - 160px);
+}
+
+.heroCopy h1,
+.storySection h2,
+.finalCta h2 {
+  margin: 0;
+  letter-spacing: -0.05em;
+}
+
+.heroCopy h1 {
+  max-width: 10ch;
+  font-size: clamp(3rem, 6vw, 5.4rem);
+  line-height: 0.95;
+}
+
+.kicker,
+.sectionLabel {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(24, 33, 47, 0.52);
+}
+
+.lead {
+  max-width: 34rem;
+  margin: 18px 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(24, 33, 47, 0.7);
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  border-radius: 999px;
+}
+
+.primaryAction {
+  padding: 0 22px;
+  color: #f4f7fb;
+  background: #1d3857;
+}
+
+.secondaryAction {
+  color: rgba(24, 33, 47, 0.72);
+}
+
+.storySection,
+.finalCta {
+  display: grid;
+  gap: 18px;
+}
+
+.pointList {
+  display: grid;
+  gap: 16px;
+}
+
+.point,
+.workflowStep {
+  padding: 20px 0;
+  border-top: 1px solid rgba(24, 33, 47, 0.08);
+}
+
+.point h3 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+}
+
+.point p,
+.workflowStep,
+.finalCta p {
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(24, 33, 47, 0.66);
+}
+
+.workflowList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
