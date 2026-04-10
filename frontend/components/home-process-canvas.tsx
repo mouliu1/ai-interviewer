@@ -22,7 +22,7 @@ const PROCESS_STAGES = [
 
 export function HomeProcessCanvas() {
   return (
-    <div className={styles.canvas} aria-label="AI interview process canvas">
+    <section className={styles.canvas} aria-label="AI interview process canvas">
       <div className={styles.frame}>
         <div className={styles.header}>
           <span>AI Interviewer</span>
@@ -41,6 +41,6 @@ export function HomeProcessCanvas() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

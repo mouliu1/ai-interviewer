@@ -12,6 +12,7 @@ describe("HomeProcessCanvas", () => {
   it("renders the four process stages from the homepage spec", () => {
     render(<HomeProcessCanvas />);
 
+    expect(screen.getByRole("region", { name: "AI interview process canvas" })).toBeInTheDocument();
     expect(screen.getByText("Resume Parse")).toBeInTheDocument();
     expect(screen.getByText("Job Fit Mapping")).toBeInTheDocument();
     expect(screen.getByText("Dynamic Follow-up")).toBeInTheDocument();
