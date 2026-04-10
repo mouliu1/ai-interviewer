@@ -7,8 +7,8 @@ import { NAV_ITEMS } from "@/lib/copy";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "岗位定制 AI 面试官",
-  description: "围绕目标岗位完成简历解析、动态追问与结构化复盘。",
+  title: "AI Interviewer",
+  description: "围绕目标岗位完成准备、模拟面试与结构化复盘。",
 };
 
 export default function RootLayout({
@@ -24,8 +24,8 @@ export default function RootLayout({
             <div className="brand-block">
               <div className="brand-orb" />
               <div>
-                <div className="site-mark">岗位定制 AI 面试官</div>
-                <p className="site-subtitle">上传真实简历，围绕目标岗位生成问题、追问与复盘。</p>
+                <div className="site-mark">AI Interviewer</div>
+                <p className="site-subtitle">岗位定制 AI 面试官</p>
               </div>
             </div>
             <nav className="top-nav">

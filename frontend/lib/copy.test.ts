@@ -3,8 +3,13 @@ import { describe, expect, it } from "vitest";
 import { NAV_ITEMS, formatDimensionLabel, formatSessionStatus } from "@/lib/copy";
 
 describe("copy", () => {
-  it("renders top-level navigation in Chinese", () => {
-    expect(NAV_ITEMS.map((item) => item.label)).toEqual(["开始", "面试中", "复盘报告"]);
+  it("renders top-level navigation for home, prepare, interview, and report", () => {
+    expect(NAV_ITEMS).toEqual([
+      { href: "/", label: "首页" },
+      { href: "/prepare", label: "准备面试" },
+      { href: "/interview", label: "面试中" },
+      { href: "/report", label: "复盘报告" },
+    ]);
   });
 
   it("renders score dimensions in Chinese", () => {

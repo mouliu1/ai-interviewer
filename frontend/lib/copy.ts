@@ -1,5 +1,6 @@
 export const NAV_ITEMS = [
-  { href: "/", label: "开始" },
+  { href: "/", label: "首页" },
+  { href: "/prepare", label: "准备面试" },
   { href: "/interview", label: "面试中" },
   { href: "/report", label: "复盘报告" },
 ] as const;

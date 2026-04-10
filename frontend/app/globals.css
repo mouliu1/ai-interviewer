@@ -43,9 +43,9 @@ body {
   font-family: "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
   color: var(--text-strong);
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 28rem),
-    radial-gradient(circle at top right, var(--bg-aurora), transparent 24rem),
-    linear-gradient(180deg, var(--bg-cream), var(--bg-mist));
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.94), transparent 24rem),
+    radial-gradient(circle at top right, rgba(164, 183, 214, 0.22), transparent 28rem),
+    linear-gradient(180deg, #f4f6f9, #dfe6ef 58%, #e9edf3);
 }
 
 a {
@@ -60,17 +60,22 @@ textarea {
 }
 
 .site-shell {
-  width: min(1240px, calc(100% - 32px));
+  width: min(1320px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 26px 0 56px;
+  padding: 24px 0 56px;
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-bottom: 18px;
+  padding: 12px 0 24px;
+  backdrop-filter: blur(18px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 10px 2px 28px;
 }
 
 .brand-block {
@@ -109,7 +114,7 @@ textarea {
   padding: 6px;
   border: 1px solid rgba(24, 33, 47, 0.06);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(24px);
   box-shadow: 0 10px 30px rgba(23, 32, 48, 0.06);
 }
