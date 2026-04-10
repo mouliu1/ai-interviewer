@@ -1,7 +1,11 @@
-def test_start_interview_returns_first_question(client):
-    response = client.post(
+import pytest
+
+
+@pytest.mark.anyio
+async def test_start_interview_returns_first_question(client, prepared_id):
+    response = await client.post(
         "/api/v1/interview/start",
-        json={"prepare_id": "prepare-1", "mode": "standard", "planned_round_count": 3},
+        json={"prepare_id": prepared_id, "mode": "standard", "planned_round_count": 3},
     )
 
     assert response.status_code == 200
@@ -9,33 +13,35 @@ def test_start_interview_returns_first_question(client):
     assert response.json()["session_status"] == "in_progress"
 
 
-def test_answer_endpoint_can_request_followup(client):
-    start_response = client.post(
+@pytest.mark.anyio
+async def test_answer_endpoint_can_request_followup(client, prepared_id):
+    start_response = await client.post(
         "/api/v1/interview/start",
-        json={"prepare_id": "prepare-2", "mode": "standard", "planned_round_count": 3},
+        json={"prepare_id": prepared_id, "mode": "standard", "planned_round_count": 3},
     )
     session_id = start_response.json()["session_id"]
 
-    answer_response = client.post(
+    answer_response = await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We improved retrieval quality a lot."},
     )
 
     assert answer_response.status_code == 200
     assert answer_response.json()["next_action"] == "ask_followup"
-    assert answer_response.json()["next_question"] == "What metric or evaluation set proved the retrieval improvement?"
+    assert answer_response.json()["next_question"] == "你提到效果有提升，具体是通过什么指标或评估集验证的？"
     assert answer_response.json()["session_status"] == "in_progress"
 
 
-def test_answer_endpoint_persists_next_question_and_round(client):
-    start_response = client.post(
+@pytest.mark.anyio
+async def test_answer_endpoint_persists_next_question_and_round(client, prepared_id):
+    start_response = await client.post(
         "/api/v1/interview/start",
-        json={"prepare_id": "prepare-3", "mode": "standard", "planned_round_count": 3},
+        json={"prepare_id": prepared_id, "mode": "standard", "planned_round_count": 3},
     )
     session_id = start_response.json()["session_id"]
     first_question = start_response.json()["first_question"]
 
-    first_answer_response = client.post(
+    first_answer_response = await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We improved retrieval quality a lot."},
     )
@@ -43,7 +49,7 @@ def test_answer_endpoint_persists_next_question_and_round(client):
 
     first_persisted_session = interview_api.build_interview_service().db.get_session(session_id)
 
-    second_answer_response = client.post(
+    second_answer_response = await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We used evaluation metrics on a held-out set."},
     )
@@ -64,18 +70,19 @@ def test_answer_endpoint_persists_next_question_and_round(client):
     assert second_persisted_session["status"] == "in_progress"
 
 
-def test_answer_endpoint_transitions_to_finish_ready_when_rounds_are_exhausted(client):
-    start_response = client.post(
+@pytest.mark.anyio
+async def test_answer_endpoint_transitions_to_finish_ready_when_rounds_are_exhausted(client, prepared_id):
+    start_response = await client.post(
         "/api/v1/interview/start",
-        json={"prepare_id": "prepare-4", "mode": "standard", "planned_round_count": 2},
+        json={"prepare_id": prepared_id, "mode": "standard", "planned_round_count": 2},
     )
     session_id = start_response.json()["session_id"]
 
-    client.post(
+    await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We improved retrieval quality a lot."},
     )
-    answer_response = client.post(
+    answer_response = await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We used evaluation metrics on a held-out set."},
     )
@@ -93,23 +100,24 @@ def test_answer_endpoint_transitions_to_finish_ready_when_rounds_are_exhausted(c
     assert persisted_session["status"] == "ready_to_finish"
 
 
-def test_answer_endpoint_rejects_answers_after_finish_ready(client):
-    start_response = client.post(
+@pytest.mark.anyio
+async def test_answer_endpoint_rejects_answers_after_finish_ready(client, prepared_id):
+    start_response = await client.post(
         "/api/v1/interview/start",
-        json={"prepare_id": "prepare-5", "mode": "standard", "planned_round_count": 2},
+        json={"prepare_id": prepared_id, "mode": "standard", "planned_round_count": 2},
     )
     session_id = start_response.json()["session_id"]
 
-    client.post(
+    await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We improved retrieval quality a lot."},
     )
-    client.post(
+    await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "We used evaluation metrics on a held-out set."},
     )
 
-    response = client.post(
+    response = await client.post(
         "/api/v1/interview/answer",
         json={"session_id": session_id, "answer_text": "One more answer after finish."},
     )
@@ -118,11 +126,23 @@ def test_answer_endpoint_rejects_answers_after_finish_ready(client):
     assert response.json()["detail"] == "Interview session is ready to finish."
 
 
-def test_answer_endpoint_returns_404_for_unknown_session(client):
-    response = client.post(
+@pytest.mark.anyio
+async def test_answer_endpoint_returns_404_for_unknown_session(client):
+    response = await client.post(
         "/api/v1/interview/answer",
         json={"session_id": "missing-session", "answer_text": "anything"},
     )
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Session not found."
+
+
+@pytest.mark.anyio
+async def test_start_interview_returns_404_for_unknown_prepare(client):
+    response = await client.post(
+        "/api/v1/interview/start",
+        json={"prepare_id": "missing-prepare", "mode": "standard", "planned_round_count": 3},
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Prepare result not found."

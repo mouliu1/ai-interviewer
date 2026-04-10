@@ -1,0 +1,72 @@
+model_name: qwen3-32b
+API_Key：请通过本地环境变量 DASHSCOPE_API_KEY 配置，不要把真实密钥提交到仓库
+
+调用说明：
+可以通过OpenAI的Python SDK来调用阿里云百炼平台上的模型。
+通过运行以下命令安装或升级 OpenAI Python SDK：
+# 如果运行失败，您可以将pip替换成pip3再运行
+pip install -U openai
+
+SDK 调用配置的base_url：https://dashscope.aliyuncs.com/compatible-mode/v1
+
+请求示例：
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx"
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+)
+
+completion = client.chat.completions.create(
+    # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
+    model="qwen3-32b",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "你是谁？"},
+    ]
+)
+print(completion.model_dump_json())
+
+
+chat响应对象（非流式输出）：
+{
+    "choices": [
+        {
+            "message": {
+                "role": "assistant",
+                "content": "我是阿里云开发的一款超大规模语言模型，我叫千问。"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+        }
+    ],
+    "object": "chat.completion",
+    "usage": {
+        "prompt_tokens": 3019,
+        "completion_tokens": 104,
+        "total_tokens": 3123,
+        "prompt_tokens_details": {
+            "cached_tokens": 2048
+        }
+    },
+    "created": 1735120033,
+    "system_fingerprint": null,
+    "model": "qwen-plus",
+    "id": "chatcmpl-6ada9ed2-7f33-9de2-8bb0-78bd4035025a"
+}
+
+
+chat响应chunk对象（流式输出）：
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"","function_call":null,"refusal":null,"role":"assistant","tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"我是","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"来自","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"阿里","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"云的超大规模","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"语言模型，我","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"叫千问千","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"问。","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":null,"index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[{"delta":{"content":"","function_call":null,"refusal":null,"role":null,"tool_calls":null},"finish_reason":"stop","index":0,"logprobs":null}],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":null}
+{"id":"chatcmpl-e30f5ae7-3063-93c4-90fe-beb5f900bd57","choices":[],"created":1735113344,"model":"qwen-plus","object":"chat.completion.chunk","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":17,"prompt_tokens":22,"total_tokens":39,"completion_tokens_details":null,"prompt_tokens_details":{"audio_tokens":null,"cached_tokens":0}}}

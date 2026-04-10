@@ -22,6 +22,8 @@ class TurnSummary(BaseModel):
     next_action: str
     next_question: str
     turn_score_summary: dict
+    strengths: list[str]
+    weaknesses: list[str]
     turn_feedback: list[str]
     current_round: int
     remaining_rounds: int

@@ -15,6 +15,14 @@ class Database:
         with self.connect() as conn:
             conn.execute(
                 """
+                create table if not exists prepares (
+                  prepare_id text primary key,
+                  payload text not null
+                )
+                """
+            )
+            conn.execute(
+                """
                 create table if not exists sessions (
                   session_id text primary key,
                   prepare_payload text not null,
@@ -27,6 +35,18 @@ class Database:
             )
             conn.execute(
                 """
+                create table if not exists turns (
+                  turn_id integer primary key autoincrement,
+                  session_id text not null,
+                  round_index integer not null,
+                  question text not null,
+                  answer text not null,
+                  evaluation_payload text not null
+                )
+                """
+            )
+            conn.execute(
+                """
                 create table if not exists reports (
                   report_id text primary key,
                   session_id text not null,
@@ -34,6 +54,25 @@ class Database:
                 )
                 """
             )
+
+    def save_prepare(self, payload: dict) -> str:
+        prepare_id = payload["prepare_id"]
+        with self.connect() as conn:
+            conn.execute(
+                """
+                insert or replace into prepares(prepare_id, payload)
+                values (?, ?)
+                """,
+                (prepare_id, json.dumps(payload)),
+            )
+        return prepare_id
+
+    def get_prepare(self, prepare_id: str) -> dict:
+        with self.connect() as conn:
+            row = conn.execute("select payload from prepares where prepare_id = ?", (prepare_id,)).fetchone()
+        if row is None:
+            raise KeyError(f"missing prepare: {prepare_id}")
+        return json.loads(row[0])
 
     def create_session(self, prepare_payload: dict, first_question: str, planned_round_count: int) -> str:
         session_id = str(uuid.uuid4())
@@ -51,7 +90,7 @@ class Database:
         with self.connect() as conn:
             row = conn.execute(
                 """
-                select session_id, current_question, planned_round_count, current_round, status
+                select session_id, current_question, planned_round_count, current_round, status, prepare_payload
                 from sessions
                 where session_id = ?
                 """,
@@ -65,7 +104,39 @@ class Database:
             "planned_round_count": row[2],
             "current_round": row[3],
             "status": row[4],
+            "prepare_payload": json.loads(row[5]),
         }
+
+    def save_turn(self, session_id: str, round_index: int, question: str, answer: str, evaluation_payload: dict) -> None:
+        with self.connect() as conn:
+            conn.execute(
+                """
+                insert into turns(session_id, round_index, question, answer, evaluation_payload)
+                values (?, ?, ?, ?, ?)
+                """,
+                (session_id, round_index, question, answer, json.dumps(evaluation_payload)),
+            )
+
+    def list_turns(self, session_id: str) -> list[dict]:
+        with self.connect() as conn:
+            rows = conn.execute(
+                """
+                select round_index, question, answer, evaluation_payload
+                from turns
+                where session_id = ?
+                order by turn_id asc
+                """,
+                (session_id,),
+            ).fetchall()
+        return [
+            {
+                "round_index": row[0],
+                "question": row[1],
+                "answer": row[2],
+                "evaluation_payload": json.loads(row[3]),
+            }
+            for row in rows
+        ]
 
     def update_session(self, session_id: str, current_question: str, current_round: int, status: str) -> None:
         with self.connect() as conn:
