@@ -272,6 +272,41 @@ textarea {
   gap: 22px;
 }
 
+.prepare-page-grid {
+  align-items: start;
+}
+
+.prepare-intro {
+  grid-column: span 7;
+}
+
+.prepare-summary {
+  grid-column: span 5;
+  display: grid;
+  align-items: stretch;
+}
+
+.prepare-copy {
+  max-width: 34rem;
+}
+
+.mini-stat-list {
+  display: grid;
+  gap: 14px;
+}
+
+.mini-stat {
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(24, 33, 47, 0.08);
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.mini-stat strong {
+  display: block;
+  margin-top: 10px;
+}
+
 .interview-grid {
   align-items: start;
 }
@@ -799,6 +834,13 @@ textarea {
   .session-strip,
   .stat-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .prepare-intro,
+  .prepare-summary {
+    grid-column: span 12;
   }
 }
 

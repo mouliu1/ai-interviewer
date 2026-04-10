@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { startTransition, useDeferredValue, useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
@@ -203,34 +204,40 @@ export function PrepareFlow() {
   }
 
   return (
-    <div className="page-grid">
-      <section className="hero-card home-hero">
-        <div className="eyebrow">定制化面试工作区</div>
-        <h1>从真实简历出发，围绕目标岗位生成问题、追问与复盘。</h1>
-        <p className="hero-copy">
-          上传 PDF 简历并填写目标岗位后，系统会现场生成岗位匹配摘要、开场问题和结构化复盘，整个过程以流式方式展开。
-        </p>
-        <div className="stat-grid">
-          <div className="stat-card">
+    <div className="page-grid prepare-page-grid">
+      <section className="panel panel-left prepare-intro">
+        <div className="panel-header">
+          <div>
+            <div className="panel-eyebrow">Prepare</div>
+            <h1>准备本场面试</h1>
+            <p className="hero-copy prepare-copy">上传简历、输入目标岗位并生成准备结果，然后进入正式面试。</p>
+          </div>
+          <div className="status-pill">{prepareResult ? "已生成" : "待准备"}</div>
+        </div>
+      </section>
+
+      <section className="panel panel-right prepare-summary">
+        <div className="mini-stat-list">
+          <div className="mini-stat">
             <span className="stat-label">输入</span>
-            <strong>真实 PDF 与目标岗位</strong>
+            <strong>PDF 简历</strong>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">过程</span>
-            <strong>动态追问与流式生成</strong>
+          <div className="mini-stat">
+            <span className="stat-label">目标</span>
+            <strong>岗位定向问题</strong>
           </div>
-          <div className="stat-card">
+          <div className="mini-stat">
             <span className="stat-label">输出</span>
-            <strong>结构化复盘报告</strong>
+            <strong>准备结果与开场问题</strong>
           </div>
         </div>
       </section>
 
-      <section className="panel panel-top">
+      <section className="panel panel-wide">
         <div className="panel-header">
           <div>
             <div className="panel-eyebrow">步骤一</div>
-            <h2>准备本场面试</h2>
+            <h2 aria-hidden="true">准备本场面试</h2>
           </div>
           <div className="status-pill">{prepareResult ? "已生成" : "待准备"}</div>
         </div>
