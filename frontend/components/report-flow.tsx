@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { startTransition, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -73,12 +74,12 @@ export function ReportFlow() {
             className="button primary"
             onClick={() => {
               startTransition(() => {
-                router.push("/");
+                router.push("/prepare");
               });
             }}
             type="button"
           >
-            返回首页
+            前往准备页
           </button>
         </div>
       </section>
@@ -128,7 +129,7 @@ export function ReportFlow() {
               className="button secondary"
               onClick={() => {
                 startTransition(() => {
-                  router.push("/");
+                  router.push("/prepare");
                 });
               }}
               type="button"

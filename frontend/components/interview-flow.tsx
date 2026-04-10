@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { startTransition, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -391,17 +392,17 @@ export function InterviewFlow() {
           </div>
         </div>
         <div className="empty-state">
-          <p>请先返回首页上传简历并填写目标岗位，再开始一场新的面试。</p>
+          <p>请先前往准备页上传简历并填写目标岗位，再开始一场新的面试。</p>
           <button
             className="button primary"
             onClick={() => {
               startTransition(() => {
-                router.push("/");
+                router.push("/prepare");
               });
             }}
             type="button"
           >
-            返回首页
+            前往准备页
           </button>
         </div>
       </section>
@@ -511,7 +512,7 @@ export function InterviewFlow() {
                     className="button secondary"
                     onClick={() => {
                       startTransition(() => {
-                        router.push("/");
+                        router.push("/prepare");
                       });
                     }}
                     type="button"
