@@ -22,6 +22,30 @@ def test_settings_accepts_legacy_env_names(monkeypatch):
     assert settings.llm_api_key == "dashscope-test-key"
 
 
+def test_settings_auto_switches_to_qwen_when_dashscope_key_is_present(monkeypatch):
+    monkeypatch.delenv("LLM_PROVIDER", raising=False)
+    monkeypatch.delenv("LLM_MODEL", raising=False)
+    monkeypatch.delenv("LLM_BASE_URL", raising=False)
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "dashscope-test-key")
+
+    settings = Settings()
+
+    assert settings.llm_provider == "qwen"
+    assert settings.llm_model == "qwen3-32b"
+    assert settings.llm_base_url == "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+
+def test_settings_normalizes_chat_completion_suffix_in_base_url():
+    settings = Settings(
+        llm_provider="qwen",
+        llm_model="qwen3-32b",
+        llm_base_url="https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+        llm_api_key="test-key",
+    )
+
+    assert settings.llm_base_url == "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+
 def test_build_llm_client_returns_fake_client():
     settings = Settings(llm_provider="fake", llm_model="test-model")
 

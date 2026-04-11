@@ -24,4 +24,16 @@ describe("HomePinnedCanvas", () => {
     expect(screen.getByRole("heading", { name: HOME_PINNED_STAGES[0].canvasLabel })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: HOME_PINNED_STAGES[2].canvasLabel })).toBeInTheDocument();
   });
+
+  it("switches between three dedicated stage scenes instead of a single shared canvas state", () => {
+    render(<HomePinnedCanvas activeStage="followup" />);
+
+    expect(screen.getByTestId("canvas-scene-input")).toHaveAttribute("data-active", "false");
+    expect(screen.getByTestId("canvas-scene-focus")).toHaveAttribute("data-active", "false");
+    expect(screen.getByTestId("canvas-scene-followup")).toHaveAttribute("data-active", "true");
+
+    expect(screen.getByText("上下文建模")).toBeInTheDocument();
+    expect(screen.getByText("焦点对齐")).toBeInTheDocument();
+    expect(screen.getByText("追问回路")).toBeInTheDocument();
+  });
 });

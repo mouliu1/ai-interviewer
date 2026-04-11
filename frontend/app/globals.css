@@ -43,9 +43,19 @@ body {
   font-family: "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
   color: var(--text-strong);
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.94), transparent 24rem),
-    radial-gradient(circle at top right, rgba(164, 183, 214, 0.22), transparent 28rem),
-    linear-gradient(180deg, #f4f6f9, #dfe6ef 58%, #e9edf3);
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 24rem),
+    radial-gradient(circle at top right, rgba(153, 176, 208, 0.28), transparent 28rem),
+    linear-gradient(180deg, #edf2f8, #d8e2ee 56%, #e7edf4);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 100% 48px;
+  opacity: 0.12;
+  pointer-events: none;
 }
 
 a {
@@ -60,9 +70,9 @@ textarea {
 }
 
 .site-shell {
-  width: min(1320px, calc(100% - 40px));
+  width: min(1360px, calc(100% - 44px));
   margin: 0 auto;
-  padding: 24px 0 56px;
+  padding: 18px 0 56px;
 }
 
 .site-header {
@@ -70,15 +80,28 @@ textarea {
   top: 0;
   z-index: 20;
   margin-bottom: 18px;
-  padding: 12px 0 24px;
+  padding: 14px 18px;
   backdrop-filter: blur(18px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  border-radius: 999px;
+  background: rgba(245, 248, 252, 0.42);
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(24, 33, 47, 0.06);
+  pointer-events: none;
 }
 
 .brand-block {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -99,37 +122,87 @@ textarea {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-soft);
+  color: #6e7b8c;
 }
 
 .site-subtitle {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   color: var(--text-muted);
   line-height: 1.6;
 }
 
+.header-controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(24, 33, 47, 0.06);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.header-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2a6a56;
+  box-shadow: 0 0 0 6px rgba(42, 106, 86, 0.12);
+}
+
 .top-nav {
+  position: relative;
   display: flex;
   gap: 8px;
   padding: 6px;
   border: 1px solid rgba(24, 33, 47, 0.06);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.68);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(235, 240, 246, 0.56));
   backdrop-filter: blur(24px);
-  box-shadow: 0 10px 30px rgba(23, 32, 48, 0.06);
+  box-shadow: 0 12px 28px rgba(23, 32, 48, 0.06);
 }
 
 .top-nav a {
   padding: 10px 16px;
   border-radius: 999px;
   color: var(--text-muted);
-  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .top-nav a:hover {
   color: var(--text-strong);
   background: rgba(255, 255, 255, 0.74);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
   transform: translateY(-1px);
+}
+
+.top-nav a[aria-current="page"] {
+  color: var(--text-strong);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(232, 238, 245, 0.84));
+  box-shadow:
+    0 10px 20px rgba(23, 32, 48, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-nav a,
+  .top-nav a:hover,
+  .header-status-dot {
+    transition: none;
+    animation: none;
+  }
 }
 
 .page-grid {
@@ -942,6 +1015,12 @@ textarea {
     flex-direction: column;
   }
 
+  .header-controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .report-score-orb {
     width: 136px;
     height: 136px;
@@ -980,5 +1059,9 @@ textarea {
   .top-nav {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .header-status {
+    justify-content: center;
   }
 }

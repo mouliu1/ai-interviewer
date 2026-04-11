@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { NAV_ITEMS } from "@/lib/copy";
+import { SiteNav } from "@/components/site-nav";
 
 import "./globals.css";
 
@@ -28,13 +27,13 @@ export default function RootLayout({
                 <p className="site-subtitle">岗位定制 AI 面试官</p>
               </div>
             </div>
-            <nav className="top-nav">
-              {NAV_ITEMS.map((item) => (
-                <Link href={item.href} key={item.href}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <div className="header-controls">
+              <div className="header-status">
+                <span className="header-status-dot" />
+                <span>工作区就绪</span>
+              </div>
+              <SiteNav />
+            </div>
           </header>
           <main>{children}</main>
         </div>

@@ -9,17 +9,22 @@ import type {
 import { formatBackendError } from "@/lib/copy";
 import { consumeSseStream, type SseEvent } from "@/lib/streaming";
 
-async function parseResponse<T>(response: Response): Promise<T> {
-  const payload = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const detail =
-      payload && typeof payload === "object" && "detail" in payload && typeof payload.detail === "string"
-        ? payload.detail
-        : `请求失败，状态码 ${response.status}。`;
-    throw new Error(formatBackendError(detail));
+async function getErrorDetail(response: Response): Promise<string> {
+  const payload = await response.clone().json().catch(() => null);
+  if (payload && typeof payload === "object" && "detail" in payload && typeof payload.detail === "string") {
+    return payload.detail;
   }
 
+  const body = await response.text().catch(() => "");
+  return body.trim() || `请求失败，状态码 ${response.status}。`;
+}
+
+async function parseResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    throw new Error(formatBackendError(await getErrorDetail(response)));
+  }
+
+  const payload = await response.json().catch(() => null);
   return payload as T;
 }
 
@@ -80,6 +85,10 @@ async function consumeFormattedStream(
   response: Response,
   onEvent: (event: SseEvent) => void | Promise<void>,
 ): Promise<void> {
+  if (!response.ok) {
+    throw new Error(formatBackendError(await getErrorDetail(response)));
+  }
+
   try {
     await consumeSseStream(response, async (event) => {
       if (event.event === "error" && event.data && typeof event.data === "object" && "message" in event.data) {

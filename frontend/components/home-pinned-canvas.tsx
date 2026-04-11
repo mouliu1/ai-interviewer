@@ -10,16 +10,35 @@ type HomePinnedCanvasProps = {
   activeStage: HomePinnedStageId;
 };
 
+const SCENE_DETAILS: Record<HomePinnedStageId, { title: string; signal: string; metric: string; note: string }> = {
+  input: {
+    title: "上下文建模",
+    signal: "简历片段、岗位要求与经历信号开始汇聚",
+    metric: "Context Intake",
+    note: "系统先建立输入语境，再决定后续聚焦方向。",
+  },
+  focus: {
+    title: "焦点对齐",
+    signal: "岗位重点、能力缺口和风险点被压缩到同一视野",
+    metric: "Focus Match",
+    note: "信号收束成匹配焦点，准备进入真正的追问压力。",
+  },
+  followup: {
+    title: "追问回路",
+    signal: "回答、追问与复盘输出进入闭环回路",
+    metric: "Loop Output",
+    note: "系统不只给问题，而是持续把回答推回训练闭环。",
+  },
+};
+
+const SCENE_ORDER = ["input", "focus", "followup"] as const;
+
 export function HomePinnedCanvas({ activeStage }: HomePinnedCanvasProps) {
   const activeStageData = HOME_PINNED_STAGES.find((stage) => stage.id === activeStage) ?? HOME_PINNED_STAGES[0];
 
   return (
     <section className={styles.canvas} aria-label="AI Interviewer pinned canvas">
       <div className={styles.surface} data-active-stage={activeStageData.id}>
-        <div className={styles.grid} aria-hidden="true" />
-        <div className={styles.orbLarge} aria-hidden="true" />
-        <div className={styles.orbSmall} aria-hidden="true" />
-
         <header className={styles.header}>
           <div className={styles.headerCopy}>
             <span className={styles.kicker}>Pinned canvas</span>
@@ -31,11 +50,35 @@ export function HomePinnedCanvas({ activeStage }: HomePinnedCanvasProps) {
           </div>
         </header>
 
-        <div className={styles.flow} aria-hidden="true">
-          <span className={styles.flowLine} />
-          <span className={styles.flowDot} />
-          <span className={styles.flowDot} />
-          <span className={styles.flowDot} />
+        <div className={styles.sceneStack} aria-hidden="true">
+          {SCENE_ORDER.map((sceneId) => {
+            const scene = SCENE_DETAILS[sceneId];
+            const isActive = sceneId === activeStageData.id;
+
+            return (
+              <section
+                key={sceneId}
+                className={`${styles.scene} ${styles[`scene${sceneId[0].toUpperCase()}${sceneId.slice(1)}` as keyof typeof styles]}`}
+                data-testid={`canvas-scene-${sceneId}`}
+                data-active={isActive ? "true" : "false"}
+              >
+                <div className={styles.sceneGlow} />
+                <div className={styles.sceneGrid} />
+                <div className={styles.sceneCore} />
+                <div className={styles.sceneHud}>
+                  <span>{scene.metric}</span>
+                  <strong>{scene.title}</strong>
+                  <p>{scene.signal}</p>
+                </div>
+                <div className={styles.sceneNote}>{scene.note}</div>
+                <div className={styles.sceneSignalRail}>
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </section>
+            );
+          })}
         </div>
 
         <ol className={styles.stageRail}>
@@ -60,12 +103,6 @@ export function HomePinnedCanvas({ activeStage }: HomePinnedCanvasProps) {
             );
           })}
         </ol>
-
-        <div className={styles.abstractCluster} aria-hidden="true">
-          <span className={styles.ribbon} />
-          <span className={styles.tileLarge} />
-          <span className={styles.tileSmall} />
-        </div>
       </div>
     </section>
   );

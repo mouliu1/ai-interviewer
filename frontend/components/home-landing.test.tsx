@@ -56,11 +56,18 @@ describe("HomeLanding", () => {
     expect(screen.getByTestId("pinned-narrative")).toHaveAttribute("data-active-stage", "input");
     expect(screen.getByTestId("pinned-narrative")).toHaveAttribute("data-motion-mode", "sharp");
     expect(screen.getByTestId("story-stage-input")).toHaveAttribute("data-active", "true");
+    expect(screen.getByTestId("story-stage-input")).toHaveAttribute("data-state", "active");
     expect(screen.getByTestId("story-stage-input")).toHaveAttribute("aria-current", "step");
     expect(screen.getByTestId("story-stage-focus")).toHaveAttribute("data-active", "false");
+    expect(screen.getByTestId("story-stage-focus")).toHaveAttribute("data-state", "upcoming");
     expect(screen.getByTestId("story-stage-focus")).not.toHaveAttribute("aria-current");
     expect(screen.getByTestId("story-stage-followup")).toHaveAttribute("data-active", "false");
+    expect(screen.getByTestId("story-stage-followup")).toHaveAttribute("data-state", "upcoming");
     expect(screen.getByTestId("story-stage-followup")).not.toHaveAttribute("aria-current");
+    expect(screen.getByTestId("story-progress-rail")).toBeInTheDocument();
+    expect(screen.getByTestId("story-progress-segment-input")).toHaveAttribute("data-state", "active");
+    expect(screen.getByTestId("story-progress-segment-focus")).toHaveAttribute("data-state", "upcoming");
+    expect(screen.getByTestId("story-progress-segment-followup")).toHaveAttribute("data-state", "upcoming");
   });
 
   it("renders the pinned story copy for every approved stage", () => {
@@ -140,8 +147,14 @@ describe("HomeLanding", () => {
 
     expect(screen.getByTestId("pinned-narrative")).toHaveAttribute("data-active-stage", "followup");
     expect(screen.getByTestId("story-stage-followup")).toHaveAttribute("data-active", "true");
+    expect(screen.getByTestId("story-stage-followup")).toHaveAttribute("data-state", "active");
     expect(screen.getByTestId("story-stage-followup")).toHaveAttribute("aria-current", "step");
     expect(screen.getByTestId("story-stage-input")).toHaveAttribute("data-active", "false");
+    expect(screen.getByTestId("story-stage-input")).toHaveAttribute("data-state", "past");
     expect(screen.getByTestId("story-stage-input")).not.toHaveAttribute("aria-current");
+    expect(screen.getByTestId("story-stage-focus")).toHaveAttribute("data-state", "past");
+    expect(screen.getByTestId("story-progress-segment-input")).toHaveAttribute("data-state", "past");
+    expect(screen.getByTestId("story-progress-segment-focus")).toHaveAttribute("data-state", "past");
+    expect(screen.getByTestId("story-progress-segment-followup")).toHaveAttribute("data-state", "active");
   });
 });

@@ -46,6 +46,7 @@ export function resolveActiveStage(progress: number): HomePinnedStageId {
 export function HomeLanding() {
   const narrativeRef = useRef<HTMLElement>(null);
   const [activeStage, setActiveStage] = useState<HomePinnedStageId>("input");
+  const activeStageIndex = HOME_PINNED_STAGES.findIndex((stage) => stage.id === activeStage);
 
   useEffect(() => {
     const narrative = narrativeRef.current;
@@ -108,8 +109,24 @@ export function HomeLanding() {
               </div>
 
               <div className={styles.stageList}>
-                {HOME_PINNED_STAGES.map((stage) => {
+                <div className={styles.progressRail} data-testid="story-progress-rail" aria-hidden="true">
+                  <span className={styles.progressRailLine} />
+                  {HOME_PINNED_STAGES.map((stage, index) => {
+                    const state = index < activeStageIndex ? "past" : stage.id === activeStage ? "active" : "upcoming";
+
+                    return (
+                      <span
+                        key={stage.id}
+                        className={styles.progressRailSegment}
+                        data-testid={`story-progress-segment-${stage.id}`}
+                        data-state={state}
+                      />
+                    );
+                  })}
+                </div>
+                {HOME_PINNED_STAGES.map((stage, index) => {
                   const isActive = stage.id === activeStage;
+                  const state = index < activeStageIndex ? "past" : isActive ? "active" : "upcoming";
 
                   return (
                     <article
@@ -117,11 +134,17 @@ export function HomeLanding() {
                       className={styles.stageCard}
                       aria-current={isActive ? "step" : undefined}
                       data-active={isActive ? "true" : "false"}
+                      data-state={state}
                       data-testid={`story-stage-${stage.id}`}
                     >
-                      <p className={styles.stageEyebrow}>{stage.eyebrow}</p>
-                      <h2>{stage.title}</h2>
-                      <p className={styles.stageBody}>{stage.body}</p>
+                      <div className={styles.stageMarker} aria-hidden="true">
+                        <span className={styles.stageDot} />
+                      </div>
+                      <div className={styles.stageContent}>
+                        <p className={styles.stageEyebrow}>{stage.eyebrow}</p>
+                        <h2>{stage.title}</h2>
+                        <p className={styles.stageBody}>{stage.body}</p>
+                      </div>
                     </article>
                   );
                 })}

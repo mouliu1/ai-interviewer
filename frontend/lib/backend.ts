@@ -16,11 +16,21 @@ export async function forwardToBackend(path: string, init: RequestInit = {}) {
     headers.set("content-type", "application/json");
   }
 
-  const response = await fetch(`${getBackendBaseUrl()}${path}`, {
-    ...init,
-    headers,
-    cache: "no-store",
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${getBackendBaseUrl()}${path}`, {
+      ...init,
+      headers,
+      cache: "no-store",
+    });
+  } catch {
+    return NextResponse.json(
+      {
+        detail: "后端服务不可用，请先启动 backend，并确认 backend/.env 中的 DashScope 配置有效。",
+      },
+      { status: 502 },
+    );
+  }
 
   const contentType = response.headers.get("content-type");
   if (contentType?.startsWith("text/event-stream") && response.body) {

@@ -48,19 +48,26 @@
 }
 
 .storyColumn {
-  min-height: calc(100svh - 84px);
+  min-height: calc(100svh - 148px);
 }
 
 .storySticky,
 .canvasSticky {
   position: sticky;
-  top: 20px;
+}
+
+.storySticky {
+  top: 84px;
+}
+
+.canvasSticky {
+  top: 136px;
 }
 
 .storySticky {
   display: grid;
   gap: 28px;
-  min-height: calc(100svh - 124px);
+  min-height: calc(100svh - 168px);
 }
 
 .storyIntro {
@@ -101,18 +108,24 @@
   display: grid;
   align-content: center;
   gap: 14px;
+  position: relative;
+  min-height: clamp(17rem, 32vh, 23rem);
+  padding-left: 56px;
 }
 
 .stageCard {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: 10px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 14px;
   padding: 22px 24px;
   border-radius: 24px;
   border: 1px solid rgba(18, 31, 44, 0.08);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 14px 34px rgba(12, 26, 43, 0.06);
-  opacity: 0.42;
-  transform: translateY(0);
+  opacity: 0.58;
+  transform: translate3d(0, 0, 0);
   transition:
     opacity 160ms ease,
     transform 160ms ease,
@@ -123,7 +136,7 @@
 
 .stageCard[data-active="true"] {
   opacity: 1;
-  transform: translateY(-2px);
+  transform: translate3d(6px, 0, 0);
   border-color: rgba(36, 85, 130, 0.22);
   background: #fff;
   box-shadow: 0 24px 48px rgba(12, 26, 43, 0.1);
@@ -133,8 +146,93 @@
   border-color: rgba(36, 85, 130, 0.26);
 }
 
+.stageCard[data-state="past"] {
+  opacity: 0.72;
+}
+
+.stageCard[data-state="upcoming"] {
+  opacity: 0.42;
+}
+
 .stageEyebrow {
   color: #8a97a3;
+}
+
+.progressRail {
+  position: absolute;
+  left: 24px;
+  top: 20px;
+  bottom: 20px;
+  width: 8px;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  justify-items: center;
+  align-items: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.progressRailLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(162, 173, 189, 0.2), rgba(162, 173, 189, 0.74), rgba(162, 173, 189, 0.24));
+}
+
+.progressRailSegment {
+  position: relative;
+  z-index: 1;
+  width: 2px;
+  height: clamp(64px, 10vh, 92px);
+  border-radius: 999px;
+  background: rgba(175, 184, 198, 0.16);
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.progressRailSegment[data-state="past"] {
+  background: rgba(103, 91, 255, 0.28);
+}
+
+.progressRailSegment[data-state="active"] {
+  background: linear-gradient(180deg, rgba(103, 91, 255, 0.98), rgba(103, 91, 255, 0.56));
+  box-shadow: 0 0 16px rgba(103, 91, 255, 0.22);
+  transform: scaleY(1.04);
+}
+
+.stageMarker {
+  display: flex;
+  justify-items: center;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.stageDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d4dde7;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 4px rgba(205, 216, 227, 0.28);
+}
+
+.stageCard[data-state="past"] .stageDot,
+.stageCard[data-state="active"] .stageDot {
+  background: #675bff;
+  box-shadow: 0 0 0 5px rgba(103, 91, 255, 0.14);
+}
+
+.stageContent {
+  display: grid;
+  gap: 10px;
 }
 
 .stageCard h2 {
@@ -155,8 +253,14 @@
 
 .canvasColumn {
   display: grid;
-  align-items: center;
-  min-height: calc(100svh - 84px);
+  align-items: start;
+  min-height: calc(100svh - 148px);
+  padding-top: 28px;
+}
+
+.canvasSticky {
+  display: grid;
+  align-content: start;
 }
 
 .proofStage,
@@ -288,6 +392,16 @@
   .stageCard {
     padding: 18px;
     border-radius: 20px;
+  }
+
+  .stageList {
+    padding-left: 16px;
+  }
+
+  .progressRail {
+    left: 19px;
+    top: 18px;
+    bottom: 18px;
   }
 
   .proofList p {
