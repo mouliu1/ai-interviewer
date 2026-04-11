@@ -13,7 +13,7 @@ describe("copy", () => {
   it("renders top-level navigation for home, prepare, interview, and report", () => {
     expect(NAV_ITEMS).toEqual([
       { href: "/", label: "首页" },
-      { href: "/prepare", label: "准备面试" },
+      { href: "/prepare", label: "准备工作区" },
       { href: "/interview", label: "面试中" },
       { href: "/report", label: "复盘报告" },
     ]);
