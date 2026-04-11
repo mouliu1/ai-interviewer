@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getNarrativeProgress, HomeLanding, resolveActiveStage } from "@/components/home-landing";
-import { HOME_PINNED_STAGES } from "@/lib/copy";
+import { HOME_PINNED_STAGES, HOME_PREPARE_ENTRY } from "@/lib/copy";
 
 afterEach(() => {
   cleanup();
@@ -54,6 +54,7 @@ describe("HomeLanding", () => {
     render(<HomeLanding />);
 
     expect(screen.getByTestId("pinned-narrative")).toHaveAttribute("data-active-stage", "input");
+    expect(screen.getByTestId("pinned-narrative")).toHaveAttribute("data-motion-mode", "sharp");
     expect(screen.getByTestId("story-stage-input")).toHaveAttribute("data-active", "true");
     expect(screen.getByTestId("story-stage-input")).toHaveAttribute("aria-current", "step");
     expect(screen.getByTestId("story-stage-focus")).toHaveAttribute("data-active", "false");
@@ -71,6 +72,23 @@ describe("HomeLanding", () => {
       expect(screen.getByTestId(`story-stage-${stage.id}`)).toHaveTextContent(stage.title);
       expect(screen.getByTestId(`story-stage-${stage.id}`)).toHaveTextContent(stage.body);
     }
+  });
+
+  it("renders the quieter proof section with all proof points", () => {
+    render(<HomeLanding />);
+
+    expect(screen.getByRole("heading", { name: "为什么这套方式更接近真实面试" })).toBeInTheDocument();
+    expect(screen.getByText("基于真实简历，而不是随机题库")).toBeInTheDocument();
+    expect(screen.getByText("围绕目标岗位，而不是泛化提问")).toBeInTheDocument();
+    expect(screen.getByText("输出结构复盘，而不是对话结束即结束")).toBeInTheDocument();
+  });
+
+  it("renders the final prepare entry", () => {
+    render(<HomeLanding />);
+
+    expect(screen.getByRole("heading", { name: HOME_PREPARE_ENTRY.title })).toBeInTheDocument();
+    expect(screen.getByText(HOME_PREPARE_ENTRY.detail)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: HOME_PREPARE_ENTRY.cta })).toHaveAttribute("href", HOME_PREPARE_ENTRY.href);
   });
 
   it("updates the active story stage when scroll progress reaches a later segment", () => {

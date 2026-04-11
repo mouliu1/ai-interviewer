@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 import { HomePinnedCanvas } from "@/components/home-pinned-canvas";
-import { HOME_PINNED_STAGES } from "@/lib/copy";
+import { HOME_PINNED_STAGES, HOME_PREPARE_ENTRY, HOME_PROOF_POINTS } from "@/lib/copy";
 
 import styles from "./home-landing.module.css";
 
@@ -93,6 +94,7 @@ export function HomeLanding() {
         ref={narrativeRef}
         data-testid="pinned-narrative"
         data-active-stage={activeStage}
+        data-motion-mode="sharp"
       >
         <div className={styles.layout}>
           <div className={styles.storyColumn}>
@@ -133,6 +135,29 @@ export function HomeLanding() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className={styles.proofStage}>
+        <div className={styles.proofIntro}>
+          <p className={styles.sectionLabel}>Transition Proof</p>
+          <h2>为什么这套方式更接近真实面试</h2>
+        </div>
+        <div className={styles.proofList}>
+          {HOME_PROOF_POINTS.map((point) => (
+            <p key={point}>{point}</p>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.prepareEntry}>
+        <div className={styles.prepareCopy}>
+          <p className={styles.sectionLabel}>Prepare Entry</p>
+          <h2>{HOME_PREPARE_ENTRY.title}</h2>
+          <p>{HOME_PREPARE_ENTRY.detail}</p>
+        </div>
+        <Link className={styles.prepareAction} href={HOME_PREPARE_ENTRY.href}>
+          {HOME_PREPARE_ENTRY.cta}
+        </Link>
       </section>
     </section>
   );

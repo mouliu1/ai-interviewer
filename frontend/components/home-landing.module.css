@@ -1,4 +1,6 @@
 .page {
+  display: grid;
+  gap: clamp(32px, 6vw, 64px);
   padding: 18px 0 max(88px, 12vh);
 }
 
@@ -157,6 +159,86 @@
   min-height: calc(100svh - 84px);
 }
 
+.proofStage,
+.prepareEntry {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  gap: clamp(20px, 4vw, 44px);
+  align-items: start;
+}
+
+.proofIntro,
+.prepareCopy {
+  display: grid;
+  gap: 12px;
+  max-width: 28rem;
+}
+
+.sectionLabel {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a8896;
+}
+
+.proofIntro h2,
+.prepareCopy h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+  color: #10263b;
+}
+
+.prepareCopy p:last-child {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #556371;
+}
+
+.proofList {
+  display: grid;
+  gap: 14px;
+}
+
+.proofList p {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(18, 31, 44, 0.08);
+  background: rgba(248, 250, 252, 0.92);
+  color: #42515f;
+  line-height: 1.6;
+}
+
+.prepareEntry {
+  align-items: center;
+  padding-top: clamp(8px, 2vw, 16px);
+  border-top: 1px solid rgba(74, 92, 128, 0.12);
+}
+
+.prepareAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  width: fit-content;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #10263b, #1c3e5d);
+  color: #f6f9fc;
+  font-weight: 700;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.prepareAction:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(9, 20, 34, 0.16);
+}
+
 @media (max-width: 980px) {
   .narrative {
     height: auto;
@@ -177,6 +259,11 @@
   .canvasSticky {
     position: relative;
     top: auto;
+  }
+
+  .proofStage,
+  .prepareEntry {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .stageList {
@@ -201,5 +288,21 @@
   .stageCard {
     padding: 18px;
     border-radius: 20px;
+  }
+
+  .proofList p {
+    padding: 16px 18px;
+  }
+
+  .prepareAction {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stageCard,
+  .prepareAction {
+    transition: none;
+    transform: none;
   }
 }
