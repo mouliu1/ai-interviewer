@@ -3,25 +3,24 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { HomeLanding } from "@/components/home-landing";
+import { HOME_PINNED_STAGES, HOME_PREPARE_ENTRY } from "@/lib/copy";
 
 afterEach(() => {
   cleanup();
 });
 
 describe("HomeLanding", () => {
-  it("sends homepage visitors to /prepare instead of showing the prepare workspace", () => {
+  it("homepage CTA points to /prepare", () => {
     render(<HomeLanding />);
 
-    expect(screen.getByRole("link", { name: "开始一次岗位定制面试" })).toHaveAttribute("href", "/prepare");
-    expect(screen.queryByText("准备本场面试")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: HOME_PREPARE_ENTRY.cta })).toHaveAttribute("href", HOME_PREPARE_ENTRY.href);
   });
 
   it("renders the product-story sections selected in the spec", () => {
     render(<HomeLanding />);
 
-    expect(screen.getByRole("heading", { name: "把一次岗位面试拆成可观察、可追问、可复盘的过程。" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "为什么它有效" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "工作流预览" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "准备好开始一场更像真实工作的面试了吗？" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "AI Interviewer" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: HOME_PINNED_STAGES[0].title })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "为什么这套方式更接近真实面试" })).toBeInTheDocument();
   });
 });
